@@ -86,16 +86,18 @@ class MuteAlertsButton(BaseButton):
             activeforeground=Theme.active().RIGHT_SIDE_BUTTON_FG_ACTIVE,
         )
 
+        self.events.mute_alerts.observer.subscribe(self,
+                                                   self.update_button_state)
+
     def on_click(self):
         self.events.mute_alerts.mute_alerts()
-
-        self.update()
+        # update_button_state will be called now - via pub-sub
 
     def render(self):
         self.button.place(relx=0, rely=0.27, relwidth=1, relheight=0.2)
 
-    def update(self):
-        if self.events.mute_alerts._alerts_muted:
+    def update_button_state(self, mute):
+        if mute:
             self.button.set_image(self.PATH_TO_MUTED)
             self.button.configure(text="Unmute")
 
